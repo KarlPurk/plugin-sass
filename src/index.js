@@ -2,12 +2,24 @@
 let fetch;
 let translate;
 let bundle;
+let styles;
 
 if (typeof window !== 'undefined') {
   fetch = load => {
     return System.import('./sass-inject', { name: __moduleName })
-      .then(inject => inject.default(load));
+      .then(inject => inject.default(load))
+      .then(css => styles = css);
   };
+  if (System.scss && !System.scss.injected) {
+      translate = function(load) {
+          load.metadata.format = 'amd';
+          return new Promise(function(resolve, reject) {
+            var css = styles.trim().replace('\n', '');
+            var output = 'def' + 'ine(function() {\nreturn "' + css + '";\n});';
+            resolve(output);
+          });
+      };
+  }
 } else {
   // setting format = 'defined' means we're managing our own output
   translate = load => {

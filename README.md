@@ -30,6 +30,33 @@ You can also use the [older syntax](http://sass-lang.com/documentation/file.SASS
 System.import('./style.sass!scss');
 ```
 
+## Compile Targets
+
+### Style
+
+By default, `plugin-sass` injects compiled css into a `<style>` tag in the `<head>`.
+
+### String
+
+`plugin-sass` can also return the compiled css as a string, so you can consume it manually:
+
+```js
+import style from './style.scss!';
+
+@Component({
+    template: '...',
+    style: [style]
+})
+```
+
+To return css, you must disable injection using the SystemJS config:
+
+```js
+scss: {
+    injected: false
+},
+```
+
 ## Importing from jspm
 
 You can import scss files from jspm packages *from within scss files* using the `jspm:` prefix. For example, if you have jspm installed `twbs/bootstrap-sass`:

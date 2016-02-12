@@ -61,11 +61,15 @@ const compile = scss => {
       }
       sass.compile(content, scss.options, result => {
         if (result.status === 0) {
-          const style = document.createElement('style');
-          style.textContent = result.text;
-          style.setAttribute('type', 'text/css');
-          document.getElementsByTagName('head')[0].appendChild(style);
-          resolve('');
+          if (!System.scss || System.scss && System.scss.injected) {
+              const style = document.createElement('style');
+              style.textContent = result.text;
+              style.setAttribute('type', 'text/css');
+              document.getElementsByTagName('head')[0].appendChild(style);
+              resolve('');
+          } else {
+              resolve(result.text);
+          }
         } else {
           reject(result.formatted);
         }
