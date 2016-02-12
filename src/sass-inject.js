@@ -1,5 +1,4 @@
 /* global Modernizr __moduleName */
-import './modernizr';
 import isEmpty from 'lodash/lang/isEmpty';
 import isString from 'lodash/lang/isString';
 import isUndefined from 'lodash/lang/isUndefined';
@@ -11,7 +10,7 @@ import escape from './escape-text';
 
 
 const importSass = new Promise((resolve, reject) => {
-  if (Modernizr.webworkers) {
+  if(typeof(Worker) !== "undefined") {
     System.import('sass.js/dist/sass', __moduleName).then(Sass => {
       System.normalize('sass.js/dist/sass.worker', __moduleName).then(worker => {
         resolve(new Sass(worker));
