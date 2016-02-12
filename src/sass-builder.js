@@ -3,22 +3,10 @@ import isEmpty from 'lodash/lang/isEmpty';
 import sass from 'sass.js';
 import path from 'path';
 import resolvePath from './resolve-path';
+import escape from './escape-text';
 
 const cssInject = "(function(c){var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})";
 const isWin = process.platform.match(/^win/);
-
-const escape = source => {
-  return source
-    .replace(/(["\\])/g, '\\$1')
-    .replace(/[\f]/g, '\\f')
-    .replace(/[\b]/g, '\\b')
-    .replace(/[\n]/g, '\\n')
-    .replace(/[\t]/g, '\\t')
-    .replace(/[\r]/g, '\\r')
-    .replace(/[\ufeff]/g, '')
-    .replace(/[\u2028]/g, '\\u2028')
-    .replace(/[\u2029]/g, '\\u2029');
-};
 
 const loadFile = file => {
   return new Promise((resolve, reject) => {
