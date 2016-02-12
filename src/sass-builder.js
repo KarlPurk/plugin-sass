@@ -6,7 +6,6 @@ import resolvePath from './resolve-path';
 import escape from './escape-text';
 
 const cssInject = "(function(c){var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})";
-const cssReturner = "(function(c){return c;})";
 const isWin = process.platform.match(/^win/);
 
 const loadFile = file => {
@@ -50,6 +49,7 @@ sass.importer((request, done) => {
 });
 
 export default (loads, compileOpts) => {
+
   const stubDefines = loads.map(load => {
     return `${(compileOpts.systemGlobal || 'System')}\.register('${load.name}', [], false, function() {});`;
   }).join('\n');
@@ -68,7 +68,9 @@ export default (loads, compileOpts) => {
       }
       sass.compile(load.source, options, result => {
         if (result.status === 0) {
-          resolve(result.text);
+          let stubStart = `${(compileOpts.systemGlobal || 'System')}\.register('${load.name}', [], false, function() { return "`
+          let stubEnd = `";});`
+          resolve(stubStart+escape(result.text)+stubEnd);
         } else {
           reject(result.formatted);
         }
@@ -79,7 +81,7 @@ export default (loads, compileOpts) => {
     // Keep style order
     Promise.all(loads.map(compilePromise))
     .then(
-      response => resolve([stubDefines, cssReturner, `("${escape(response.reverse().join(''))}");`].join('\n')),
+      response => resolve(response.join('\n')),
       reason => reject(reason));
   });
 };
