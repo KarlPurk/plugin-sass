@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/screendriver/plugin-sass.git"
+    "url": "git+https://github.com/KarlPurk/plugin-sass.git"
   },
-  "author": "Christian Rackerseder <github@echooff.de>",
+  "author": "Kevin Jones <him@kevincjones.co.uk>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/screendriver/plugin-sass/issues"
+    "url": "https://github.com/KarlPurk/plugin-sass/issues"
   },
-  "homepage": "https://github.com/screendriver/plugin-sass#readme",
+  "homepage": "https://github.com/KarlPurk/plugin-sass#readme",
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-core": "^5.8.25",

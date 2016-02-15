@@ -1,7 +1,7 @@
 # plugin-sass
 
-[![Build Status](https://travis-ci.org/mobilexag/plugin-sass.svg?branch=master)](https://travis-ci.org/mobilexag/plugin-sass)
-[![Dependency Status](https://david-dm.org/mobilexag/plugin-sass.svg)](https://david-dm.org/mobilexag/plugin-sass)
+[![Build Status](https://travis-ci.org/KarlPurk/plugin-sass.svg?branch=master)](https://travis-ci.org/KarlPurk/plugin-sass)
+[![Dependency Status](https://david-dm.org/KarlPurk/plugin-sass.svg)](https://david-dm.org/KarlPurk/plugin-sass)
 
 [SystemJS](https://github.com/systemjs/systemjs)
 [SASS](http://sass-lang.com) loader plugin. Can easily be installed with
@@ -11,50 +11,51 @@
 $ jspm install scss=sass
 ```
 
-To apply your SASS styles to your current page asynchronously:
+This version of the plugin will not use the css to modify your page, it will
+be up to you how to use it. Therefore injecting or using the css output is done
+inside your resolved promise.
 
 ```js
-System.import('./style.scss!');
+System.import('./style.scss!').then(function(css){
+  //inject css in head?
+  //pass css into angular2 @component styles tag [up to you]
+});
 ```
 
 or synchronously
 
 ```js
-import './style.scss!';
+import styles from './style.scss!';
+//styles will contain your css ready again for what you need
 ```
 
 You can also use the [older syntax](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#syntax)
 , known as the indented syntax (or sometimes just "_Sass_")
 
 ```js
-System.import('./style.sass!scss');
+System.import('./style.sass!scss').then(function(css){
+  //inject your css anywhere you need
+});
 ```
 
 ## Compile Targets
 
 ### Style
 
-By default, `plugin-sass` injects compiled css into a `<style>` tag in the `<head>`.
+By default, `plugin-sass` does NOT inject compiled css into a `<style>` tag in the `<head>`. It instead returns your css as a string.
 
-### String
+### String for angular 2
 
-`plugin-sass` can also return the compiled css as a string, so you can consume it manually:
+`plugin-sass` was a modification of the original plugin specifically because we needed a string that was for use in the @component decorator. It was different
+enough to feel like a new plugin.
 
 ```js
 import style from './style.scss!';
 
 @Component({
     template: '...',
-    style: [style]
+    styles: [style]
 })
-```
-
-To return css, you must disable injection using the SystemJS config:
-
-```js
-scss: {
-    injected: false
-},
 ```
 
 ## Importing from jspm
