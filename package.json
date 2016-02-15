@@ -1,7 +1,7 @@
 {
-  "name": "plugin-sass",
-  "version": "0.2.1",
-  "description": "SystemJS SASS loader plugin",
+  "name": "plugin-sass-injectonly",
+  "version": "0.2.4",
+  "description": "SystemJS SASS injector plugin that inlines the style requests, more flexible for angular 2 ",
   "registry": "jspm",
   "main": "index.js",
   "scripts": {

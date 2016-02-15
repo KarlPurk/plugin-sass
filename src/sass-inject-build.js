@@ -52,34 +52,12 @@ sass.importer( function(request, done){
     .catch(() => done());
 });
 
-
-
-const compile function(scss){
-  return new Promise((resolve, reject) => {
-    importSass.then(sass => {
-      const content = scss.content;
-      if (isString(content) && isEmpty(content) ||
-          !isUndefined(content.responseText) && isEmpty(content.responseText)) {
-        return resolve('');
-      }
-      sass.compile(content, scss.options, result => {
-        if (result.status === 0) {
-          resolve(escape(result.text));
-        } else {
-          reject(result.formatted);
-        }
-      });
-    });
-  });
-};
-
 export default function(loadObject){
   const compilePromise = function(load){
 
     return new Promise((resolve, reject) => {
 
       const urlBase = `${path.dirname(load.address)}/`;
-
 
       const options = {
         style: sass.style.compressed,
@@ -91,8 +69,6 @@ export default function(loadObject){
       if (isEmpty(load.source)) {
         return resolve('');
       }
-
-
 
       sass.compile(load.source, options, result => {
 
