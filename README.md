@@ -8,7 +8,7 @@
 [jspm](http://jspm.io) package manager.
 
 ```sh
-$ jspm install scss=sass
+$ jspm install scss=github:KarlPurk/plugin-sass
 ```
 
 This version of the plugin will not use the css to modify your page, it will
