@@ -2,7 +2,7 @@
 let fetch;
 let translate;
 let bundle;
-let styles;
+let styles = {};
 
 if (typeof window !== 'undefined') {
   fetch = load => {
@@ -20,14 +20,26 @@ if (typeof window !== 'undefined') {
   };
 
 } else {
-  // setting format = 'defined' means we're managing our own output
-  translate = load => {
-    load.metadata.format = 'defined';
+
+  fetch = function bundler(load, opts) {
+    return System.import('./sass-inject-build', { name: __moduleName })
+      .then(builder => return builder.default.call(System, load, opts))
+      .then(function(css){
+          //i'm not thrilled here but i cant see a way yet to pass between hooks
+          //since on bundle it appears to lose handle ALL the fetch in a single sitting
+          return styles[load.name] = css.replace(/\n$/, '');
+      });
+
   };
-  bundle = function bundler(loads, opts) {
-    return System.import('./sass-builder', { name: __moduleName })
-      .then(builder => builder.default.call(System, loads, opts));
+
+  translate = function(load) {
+      load.metadata.format = 'amd';
+      return new Promise(function(resolve, reject) {
+        var css = styles[load.name].trim().replace('\n', '');
+        var output = 'def' + 'ine(function() {\nreturn "' + css + '";\n});';
+        resolve(output);
+      });
   };
 }
 
-export { fetch, translate, bundle };
+export { fetch, translate };

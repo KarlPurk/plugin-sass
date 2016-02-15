@@ -1,13 +1,18 @@
 import fs from 'fs';
-import isEmpty from 'lodash/lang/isEmpty';
 import sass from 'sass.js';
+import isEmpty from 'lodash/lang/isEmpty';
+import isString from 'lodash/lang/isString';
+import isUndefined from 'lodash/lang/isUndefined';
 import path from 'path';
 import resolvePath from './resolve-path';
 import escape from './escape-text';
 
 const isWin = process.platform.match(/^win/);
 
-const loadFile = file => {
+
+const loadFile = function(file){
+
+
   return new Promise((resolve, reject) => {
     fs.readFile(file, { encoding: 'UTF-8' }, (err, data) => {
       if (err) {
@@ -25,7 +30,7 @@ const fromFileURL = url => {
 };
 
 // intercept file loading requests (@import directive) from libsass
-sass.importer((request, done) => {
+sass.importer( function(request, done){
   // Currently only supporting scss imports due to
   // https://github.com/sass/libsass/issues/1695
   let content;
@@ -47,40 +52,69 @@ sass.importer((request, done) => {
     .catch(() => done());
 });
 
-export default (loads, compileOpts) => {
 
-  const stubDefines = loads.map(load => {
-    return `${(compileOpts.systemGlobal || 'System')}\.register('${load.name}', [], false, function() {});`;
-  }).join('\n');
 
-  const compilePromise = load => {
-    return new Promise((resolve, reject) => {
-      const urlBase = `${path.dirname(load.address)}/`;
-      const options = {
-        style: sass.style.compressed,
-        indentedSyntax: load.address.endsWith('.sass'),
-        importer: { urlBase },
-      };
-      // Occurs on empty files
-      if (isEmpty(load.source)) {
+const compile function(scss){
+  return new Promise((resolve, reject) => {
+    importSass.then(sass => {
+      const content = scss.content;
+      if (isString(content) && isEmpty(content) ||
+          !isUndefined(content.responseText) && isEmpty(content.responseText)) {
         return resolve('');
       }
-      sass.compile(load.source, options, result => {
+      sass.compile(content, scss.options, result => {
         if (result.status === 0) {
-          let stubStart = `${(compileOpts.systemGlobal || 'System')}\.register('${load.name}', [], false, function() { return "`
-          let stubEnd = `";});`
-          resolve(stubStart+escape(result.text)+stubEnd);
+          resolve(escape(result.text));
         } else {
           reject(result.formatted);
         }
       });
     });
+  });
+};
+
+export default function(loadObject){
+  const compilePromise = function(load){
+
+    return new Promise((resolve, reject) => {
+
+      const urlBase = `${path.dirname(load.address)}/`;
+
+
+      const options = {
+        style: sass.style.compressed,
+        indentedSyntax: load.address.endsWith('.sass'),
+        importer: { urlBase },
+      };
+
+      // Occurs on empty files
+      if (isEmpty(load.source)) {
+        return resolve('');
+      }
+
+
+
+      sass.compile(load.source, options, result => {
+
+        if (result.status === 0) {
+          resolve(escape(result.text));
+        } else {
+          reject(result.formatted);
+        }
+      });
+    });
+
   };
   return new Promise((resolve, reject) => {
-    // Keep style order
-    Promise.all(loads.map(compilePromise))
-    .then(
-      response => resolve(response.join('\n')),
-      reason => reject(reason));
+    var load = loadObject;
+    return loadFile(fromFileURL(load.address))
+           .then(function(result){
+             load.source = result;
+             return compilePromise(load);
+           })
+           .then(function(res){
+             resolve(res);
+           })
+
   });
 };
