@@ -1,14 +1,14 @@
 # plugin-sass
 
-[![Build Status](https://travis-ci.org/KarlPurk/plugin-sass.svg?branch=master)](https://travis-ci.org/KarlPurk/plugin-sass)
-[![Dependency Status](https://david-dm.org/KarlPurk/plugin-sass.svg)](https://david-dm.org/KarlPurk/plugin-sass)
+[![Build Status](https://travis-ci.org/KevCJones/plugin-sass.svg?branch=master)](https://travis-ci.org/KevCJones/plugin-sass)
+[![Dependency Status](https://david-dm.org/KevCJones/plugin-sass.svg)](https://david-dm.org/KevCJones/plugin-sass)
 
 [SystemJS](https://github.com/systemjs/systemjs)
 [SASS](http://sass-lang.com) loader plugin. Can easily be installed with
 [jspm](http://jspm.io) package manager.
 
 ```sh
-$ jspm install scss=github:KarlPurk/plugin-sass
+$ jspm install scss=github:KevCJones/plugin-sass
 ```
 
 This version of the plugin will not use the css to modify your page, it will
